@@ -6,9 +6,9 @@ The first step into the RAG world via fashion context. The "assistant" answers t
 I used a model from HuggingFace and an open-source vector store.
 
 I created a RAG chain using the following:
-- For embedding, the model: sentence-transformers/all-MiniLM-L6-v2
-- For VectorDB: ChromaDB (`pip install chromadb
-- As the LLM: mistralai/Mixtral-8x7B-Instruct-v0.1
+- For embedding, the model: `sentence-transformers/all-MiniLM-L6-v2`
+- For VectorDB: ChromaDB (`pip install chromadb`)
+- As the LLM: `mistralai/Mixtral-8x7B-Instruct-v0.1`
 
 **Short and simple,**
 I create the vector database from the PDF file containing fashion data and use the LLM to query it and answer a question.
