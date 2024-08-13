@@ -12,16 +12,20 @@ from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 load_dotenv()
 
 DB_PATH = './db'
+DATA_SOURCE = 'data/fashion_data.pdf'
+PROMPT_TEMPLATE = 'data/prompt_template.txt'
+
+EMBEDDING_MODEL = 'sentence-transformers/all-MiniLM-L6-v2'
+ASSISTANT_MODEL = 'mistralai/Mixtral-8x7B-Instruct-v0.1'
 
 # --------------------------------------------------------------------------------
 
-with open('data/prompt_template.txt', 'r') as f:
+with open(PROMPT_TEMPLATE, 'r') as f:
     prompt_template = f.read()
 
 prompt = PromptTemplate(template=prompt_template, input_variables=['question'])
 
-embed_model = HuggingFaceEmbeddings(
-    model_name='sentence-transformers/all-MiniLM-L6-v2')
+embed_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 
 create_db = not os.path.exists(DB_PATH)
 
@@ -29,7 +33,7 @@ vector_store = Chroma(embedding_function=embed_model,
                       persist_directory=DB_PATH)
 
 if create_db:
-    pdfloader = PyPDFLoader('data/fashion_data.pdf')
+    pdfloader = PyPDFLoader(DATA_SOURCE)
     documents = pdfloader.load()
 
     text_splitter = RecursiveCharacterTextSplitter(
@@ -41,7 +45,7 @@ if create_db:
 else:
     print('[vector database already exist]')
 
-model = HuggingFaceEndpoint(repo_id='mistralai/Mixtral-8x7B-Instruct-v0.1',
+model = HuggingFaceEndpoint(repo_id=ASSISTANT_MODEL,
                             temperature=1, max_new_tokens=1024)
 
 rag_chain = RetrievalQA.from_chain_type(
